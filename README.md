@@ -1,4 +1,4 @@
-## Hi there 👋
+## Sam Harley Plays: short comic plays for festivals. samharleyplays.com
 
 <!--
 **SamHarleyPlays/SamHarleyPlays** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
