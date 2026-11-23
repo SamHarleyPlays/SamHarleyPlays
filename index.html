@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam Harley Plays</title>
+<meta name="description" content="Short comic plays for festivals and stages everywhere. Read the opening pages free; license a production for 12 months.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:wght@400;600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout idea: a theatre programme. Masthead, then a catalogue of play cards that read like cast-list entries; each play opens to a typed script preview. */
+  --paper: #f5f5f2;
+  --card: #ffffff;
+  --ink: #17191e;
+  --muted: #5d626c;
+  --line: #d9dbdf;
+  --accent: #b3122e;
+  --accent-ink: #ffffff;
+  --script-paper: #ffffff;
+  --font-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-script: "Courier Prime", "Courier New", Courier, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #111215; --card: #1a1c20; --ink: #eceef1; --muted: #9ba1ab;
+    --line: #2b2e35; --accent: #ef4a62; --accent-ink: #14060a; --script-paper: #1d1f24;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #111215; --card: #1a1c20; --ink: #eceef1; --muted: #9ba1ab;
+  --line: #2b2e35; --accent: #ef4a62; --accent-ink: #14060a; --script-paper: #1d1f24;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.55;
+}
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+
+/* Masthead */
+header.mast { border-bottom: 1px solid var(--line); }
+.mast .wrap { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px 24px; padding-top: 22px; padding-bottom: 18px; }
+.brand { text-decoration: none; color: var(--ink); display: flex; align-items: baseline; gap: 10px; }
+.brand strong { font-family: var(--font-display); font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+.brand span { font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; }
+nav { display: flex; gap: 20px; flex-wrap: wrap; }
+nav a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 15px; padding: 4px 0; border-bottom: 2px solid transparent; }
+nav a[aria-current="page"] { border-bottom-color: var(--accent); }
+
+main { padding: 40px 0 64px; }
+.view[hidden] { display: none; }
+
+/* Home */
+.intro { display: grid; gap: 14px; max-width: 640px; margin-bottom: 36px; }
+.intro h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 700; letter-spacing: -0.015em; }
+.intro p { margin: 0; color: var(--muted); font-size: 18px; }
+
+.how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 44px; }
+.how div { border-top: 3px solid var(--ink); padding-top: 10px; }
+.how b { display: block; font-family: var(--font-display); font-size: 18px; margin-bottom: 2px; }
+.how p { margin: 0; color: var(--muted); font-size: 15px; }
+
+.section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 18px; }
+.section-head h2 { font-size: 22px; }
+.section-head span { color: var(--muted); font-size: 14px; }
+
+.catalogue { display: grid; gap: 16px; }
+.play-card { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 22px; display: grid; grid-template-columns: 1fr auto; gap: 8px 24px; }
+.play-card h3 { font-size: 26px; }
+.play-card h3 a { color: var(--ink); text-decoration: none; }
+.play-card h3 a:hover { color: var(--accent); }
+.play-card .logline { margin: 0; grid-column: 1; max-width: 60ch; }
+.play-card .actions { grid-column: 2; grid-row: 1 / span 3; display: flex; flex-direction: column; gap: 8px; align-self: center; }
+.facts { grid-column: 1; display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; padding: 0; list-style: none; }
+.facts li { font-size: 13px; font-weight: 600; border: 1px solid var(--line); border-radius: 3px; padding: 2px 8px; color: var(--muted); }
+.coming { border: 1px dashed var(--line); border-radius: 6px; padding: 18px 22px; color: var(--muted); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: 600 15px/1 var(--font-body); padding: 12px 18px; border-radius: 4px; border: 1px solid var(--ink); background: transparent; color: var(--ink); text-decoration: none; cursor: pointer; white-space: nowrap; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn:hover { filter: brightness(1.08); }
+
+/* Play page */
+.back { font-size: 15px; font-weight: 600; text-decoration: none; display: inline-block; margin-bottom: 18px; }
+.play-head { display: grid; grid-template-columns: 1fr 300px; gap: 32px; align-items: start; }
+.play-head h1 { font-size: clamp(34px, 6vw, 54px); letter-spacing: -0.02em; }
+.byline { color: var(--muted); margin: 6px 0 18px; }
+.synopsis p { margin: 0 0 12px; max-width: 62ch; }
+
+.buybox { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 20px; display: grid; gap: 14px; position: sticky; top: 16px; }
+.price { font-family: var(--font-display); font-size: 34px; font-weight: 700; line-height: 1; }
+.price small { font-family: var(--font-body); font-size: 14px; font-weight: 400; color: var(--muted); }
+.buybox ul { margin: 0; padding-left: 18px; font-size: 15px; color: var(--muted); }
+.buybox .note { font-size: 14px; color: var(--muted); margin: 0; }
+.notice { font-size: 14px; border-left: 3px solid var(--accent); padding: 6px 10px; margin: 0; }
+
+table.specs { border-collapse: collapse; width: 100%; margin: 8px 0 28px; font-size: 15px; }
+table.specs th { text-align: left; color: var(--muted); font-weight: 600; padding: 8px 16px 8px 0; width: 140px; vertical-align: top; }
+table.specs td { padding: 8px 0; }
+table.specs tr + tr { border-top: 1px solid var(--line); }
+
+.preview-label { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin: 40px 0 12px; }
+.preview-label h2 { font-size: 22px; }
+.preview-label span { color: var(--muted); font-size: 14px; }
+
+.script { background: var(--script-paper); border: 1px solid var(--line); border-radius: 2px; padding: 48px clamp(18px, 6vw, 72px) 0; font-family: var(--font-script); font-size: 15px; line-height: 1.5; max-width: 760px; position: relative; overflow: hidden; }
+.script .title-block { text-align: center; margin-bottom: 36px; }
+.script .title-block b { display: block; font-size: 20px; text-transform: uppercase; letter-spacing: 0.08em; }
+.script .dir { font-style: italic; margin: 0 0 18px 12%; }
+.script .speech { margin: 0 0 18px; }
+.script .who { text-align: center; text-transform: uppercase; font-weight: 700; margin: 0; }
+.script .paren { text-align: center; margin: 0; font-style: italic; }
+.script .line { margin: 0 8%; }
+.script .fade { position: absolute; left: 0; right: 0; bottom: 0; height: 160px; background: linear-gradient(to bottom, transparent, var(--script-paper)); pointer-events: none; }
+.script .spacer { height: 80px; }
+.end-preview { max-width: 760px; border: 1px solid var(--line); border-top: none; background: var(--card); padding: 22px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; }
+.end-preview p { margin: 0; }
+
+/* Text pages */
+.prose { max-width: 680px; }
+.prose h1 { font-size: clamp(30px, 5vw, 42px); margin-bottom: 18px; }
+.prose h2 { font-size: 20px; margin: 30px 0 8px; }
+.prose p, .prose li { max-width: 65ch; }
+.prose ol, .prose ul { padding-left: 22px; }
+.prose li { margin-bottom: 8px; }
+
+footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+footer .wrap { padding-top: 20px; padding-bottom: 28px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
+
+@media (max-width: 760px) {
+  .how { grid-template-columns: 1fr; }
+  .play-card { grid-template-columns: 1fr; }
+  .play-card .actions { grid-column: 1; grid-row: auto; flex-direction: row; flex-wrap: wrap; margin-top: 8px; }
+  .play-head { grid-template-columns: 1fr; }
+  .buybox { position: static; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <a class="brand" href="#plays"><strong>Sam Harley</strong><span>Short Plays</span></a>
+    <nav aria-label="Main">
+      <a href="#plays" data-nav="plays">Plays</a>
+      <a href="#licensing" data-nav="licensing">Licensing</a>
+      <a href="#about" data-nav="about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- HOME / CATALOGUE -->
+  <section class="view" id="view-plays">
+    <div class="intro">
+      <h1>Short comic plays for festivals and stages everywhere</h1>
+      <p>Each play runs under ten minutes and ends with a twist. Every one is written for a bare stage: a table and two chairs or near enough, small casts, and no more than one sound effect. Read the opening pages free, then license your production.</p>
+    </div>
+
+    <div class="how">
+      <div><b>1. Read</b><p>The first few pages of every play are free to read online.</p></div>
+      <div><b>2. License</b><p>US$3.50 buys the full script and the right to stage it for 12 months.</p></div>
+      <div><b>3. Perform</b><p>Print copies for your cast, rehearse, and take it to your festival.</p></div>
+    </div>
+
+    <div class="section-head">
+      <h2>The plays</h2>
+      <span id="play-count"></span>
+    </div>
+    <div class="catalogue" id="catalogue"></div>
+  </section>
+
+  <!-- SINGLE PLAY -->
+  <section class="view" id="view-play" hidden></section>
+
+  <!-- LICENSING -->
+  <section class="view prose" id="view-licensing" hidden>
+    <h1>Licensing</h1>
+    <p>One licence costs US$3.50 and lets one group stage one play for 12 months. Buying the licence gets you the full script as a PDF.</p>
+
+    <h2>What the licence covers</h2>
+    <ul>
+      <li>One group: a theatre company, school, drama club or festival entrant.</li>
+      <li>Any number of performances within 12 months of purchase, including festival heats, finals and encore nights.</li>
+      <li>Printing as many copies of the script as your cast and crew need.</li>
+      <li>Filming for festival judging, your own archive, and short non-commercial clips on social media.</li>
+    </ul>
+
+    <h2>What we ask in return</h2>
+    <ul>
+      <li>Credit the play in your programme and publicity as: <em>[Title] by Sam Harley</em>.</li>
+      <li>Perform the text as written. Changing local references (a town, a shop name) to suit your audience is fine, and so are the character swaps noted in each script. Anything beyond that, please ask first.</li>
+      <li>Each group needs its own licence. If another group wants to stage the play, they can license it here.</li>
+    </ul>
+
+    <h2>What needs separate permission</h2>
+    <ul>
+      <li>Commercial recordings, broadcast or streaming of a full performance.</li>
+      <li>Publishing the script in an anthology or collection.</li>
+      <li>Adapting the play into another form, such as a film or a longer play.</li>
+    </ul>
+
+    <h2>Questions</h2>
+    <p>Email <a href="mailto:hello@samharleyplays.com">hello@samharleyplays.com</a> (hello@samharleyplays.com). We're always glad to hear where a play is being performed.</p>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="view prose" id="view-about" hidden>
+    <h1>About Sam Harley</h1>
+    <p>Sam Harley writes short plays for the stage: comedies built for small casts, simple sets and festival time limits, each with a turn at the end that the audience doesn't see coming.</p>
+    <p>The plays are written to be practical. Most need two or three actors, a table and a couple of chairs, and at most one sound effect, so a group can put one on with a few weeks of rehearsal and very little budget.</p>
+    <p>New plays are added regularly. To ask about a play, a festival or a licence, email <a href="mailto:hello@samharleyplays.com">hello@samharleyplays.com</a> (hello@samharleyplays.com).</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="year"></span> Sam Harley. All plays are protected by copyright.</span>
+    <a href="#licensing">Licence terms</a>
+  </div>
+</footer>
+
+<script>
+/* ===========================================================
+   THE CATALOGUE
+   To add a play: copy the object below, change the details,
+   and paste the new one into this list. Paste the play's
+   checkout link from your payment service into checkoutUrl.
+   =========================================================== */
+const PLAYS = [
+  {
+    slug: "the-ransom",
+    title: "The Ransom",
+    logline: "Two hopeless dognappers have to whisper their way through a ransom call, because if the champion Pomeranian in the bathroom wakes up, she won't stop yapping.",
+    synopsis: [
+      "Daz and Kev have kidnapped Champion Lady Arabella of Belgravia, a prize-winning Pomeranian with 42,000 Instagram followers, and are holed up in a cheap motel waiting for her wealthy owner to pay up.",
+      "There's just one problem. Arabella yapped for six straight hours, the manager has threatened to call the police, and she has only just gone to sleep. Every word of the ransom call has to be whispered. Then the owner makes them an offer they didn't see coming."
+    ],
+    cast: "2 (written M/M; plays equally well F/F or M/F)",
+    castShort: "Cast of 2",
+    runtime: "About 7 minutes",
+    runtimeShort: "7 min",
+    set: "A table and two chairs",
+    sound: "One sound effect, at the end",
+    props: "A mobile phone, a container of chicken",
+    genre: "Comedy",
+    pages: 7,
+    price: 3.5,
+    currency: "USD",
+    checkoutUrl: "",   // paste the Payhip / Lemon Squeezy link here
+    preview: [
+      { d: "Lights up. A cheap motel room off the M1. Night. A small table, two chairs. On the table: a mobile phone and a plastic container of chicken. DAZ sits staring at the phone. KEV stands frozen at the bathroom door, ear pressed to it. He holds up a hand: wait. A long moment. Then he tiptoes, agonisingly slowly, to the table and sits." },
+      { d: "Everything that follows is a stage whisper unless marked otherwise." },
+      { c: "KEV", t: "She's asleep." },
+      { c: "DAZ", t: "You sure?" },
+      { c: "KEV", t: "I sang her the whole Celine Dion album, Daz. Twice. She's asleep." },
+      { c: "DAZ", t: "How long's she been out?" },
+      { c: "KEV", t: "Eleven minutes. Longest she's been quiet since we took her." },
+      { d: "They both look at the bathroom door." },
+      { c: "DAZ", t: "Six hours. Six hours of yapping. I didn't know a dog could yap for six hours." },
+      { c: "KEV", t: "She paces herself. Little ones, then a big one, then little ones —" },
+      { c: "DAZ", t: "I know how she does it, Kev. I was there." },
+      { c: "KEV", t: "And the manager said one more complaint and he's calling the cops." },
+      { c: "DAZ", t: "I know what the manager said." },
+      { c: "KEV", t: "He said it to me. Through the door. He had a torch." },
+      { c: "DAZ", t: "She's a Pomeranian. She weighs two kilos." },
+      { c: "KEV", t: "She nipped my ankle." },
+      { c: "DAZ", t: "She nips everyone's ankle." },
+      { c: "KEV", p: "(lifting his trouser leg: a sock with a hole in it)", t: "Four times. Same spot every time. That's not an accident, Daz. That's a strategy." },
+      { d: "Pause." },
+      { c: "KEV", t: "How long since you rang her?" },
+      { c: "DAZ", p: "(checks phone)", t: "Forty minutes." },
+      { c: "KEV", t: "Shouldn't she have rung back by now? If someone took my dog —" },
+      { c: "DAZ", t: "You haven't got a dog." },
+      { c: "KEV", t: "If I did." },
+      { c: "DAZ", t: "She's rich. Rich people make you wait. She's in her mansion in Belgravia, sipping a — whatever they sip —" },
+      { c: "KEV", t: "Prosecco." },
+      { c: "DAZ", t: "— sipping a prosecco, letting us sweat. Then she'll ring, and she'll pay. Fifty grand, Kev. Champion Lady Arabella of Belgravia. Best in Show three years running. Forty thousand followers on Instagram." },
+      { c: "KEV", p: "(off DAZ's look)", t: "Forty-two. I followed her. For research. She's got a heated bed shaped like a swan." },
+      { c: "DAZ", t: "Well, she can have her swan back when Mummy pays up." },
+      { c: "KEV", t: "She won't eat the chicken." },
+      { c: "DAZ", t: "It's chicken." },
+      { c: "KEV", t: "It's thigh. She only eats breast. Poached. Cut in strips. Not cubes. I tried cubes." },
+      { d: "Beat." },
+      { c: "KEV", t: "She looked at me, Daz." }
+    ]
+  },
+  {
+    slug: "a-table-and-two-chairs",
+    title: "A Table and Two Chairs",
+    logline: "The audience thinks it's watching a scene change. Two stagehands can't find a teapot, and by the time anyone realises this is the next play, the stagehands are about to find out too.",
+    synopsis: [
+      "Written for short-play festivals. The lights go to the usual scene-change state, and two stagehands in blacks carry on a table and two chairs. It looks exactly like the changeover between plays, until the stage manager calls down from the booth: the teapot is missing.",
+      "What follows is a backstage farce played out in full view: an argument over which table is the props table, an appeal to the audience, a dig at the adjudicator and a search of the bar that turns up far more than a teapot. Every theatre group will recognise every minute of it."
+    ],
+    cast: "2 stagehands (any gender), plus the stage manager's voice from the booth, which the festival's own operator can read",
+    castShort: "Cast of 2 + voice",
+    runtime: "About 7–8 minutes",
+    runtimeShort: "7–8 min",
+    set: "A table and two chairs",
+    sound: "None",
+    props: "A torch, gaffer tape, a plastic beer jug, a copy of the script",
+    genre: "Comedy",
+    pages: 8,
+    price: 3.5,
+    currency: "USD",
+    checkoutUrl: "",   // paste the Payhip / Lemon Squeezy link here
+    preview: [
+      { d: "The previous play has just ended. The applause dies away. The stage goes to a dim scene-change state. TERRY and PAT, in stage blacks, walk on briskly the way crew do: heads down, no eye contact. TERRY carries a small table; PAT carries two chairs." },
+      { d: "They place the table centre. PAT sets the chairs either side. TERRY checks the floor with the torch, finds the spike marks and nudges the table two centimetres. PAT nudges a chair. TERRY looks at it, and nudges it back. PAT nudges it again. A tiny, silent stand-off. TERRY lets it go." },
+      { d: "This takes as long as a real changeover, and slightly longer. Nothing here is acted." },
+      { d: "TERRY gives a thumbs-up towards the booth and turns to exit. PAT follows." },
+      { c: "SM", p: "(over the god mic, flat, weary)", t: "Pat." },
+      { d: "PAT stops." },
+      { c: "SM", t: "Teapot." },
+      { d: "PAT looks at the table. No teapot. PAT looks at TERRY. TERRY looks at PAT. PAT exits, fast. TERRY hovers, unsure whether to go or stay, then straightens a chair that doesn't need straightening." },
+      { c: "TERRY", p: "(a stage whisper, up to the booth)", t: "Do you want me to go too?" },
+      { c: "SM", t: "Stay with the table." },
+      { c: "TERRY", t: "Why?" },
+      { c: "SM", t: "In case you lose it too." },
+      { d: "TERRY stays with the table. A long, awkward beat. TERRY becomes aware of the audience, and steps forward, apologetic, half-voiced, the way real crew do." },
+      { c: "TERRY", t: "Sorry, folks. Won't be a minute. Small prop issue." },
+      { d: "TERRY retreats to the table. Then, feeling more is needed, steps forward again." },
+      { c: "TERRY", t: "It's a teapot. For the next play. It's allowed. The rules say a table, two chairs and hand props, and a teapot's a hand prop. We checked." },
+      { d: "Beat. Still no PAT." },
+      { c: "TERRY", t: "While we wait, raffle tickets are still on sale in the foyer. Two dollars. First prize is a hamper. Second prize is a season ticket. Third prize is two season tickets." },
+      { d: "PAT re-enters, empty-handed and out of breath." },
+      { c: "PAT", t: "It's not there." }
+    ]
+  },
+  {
+    slug: "line",
+    title: "Line!",
+    logline: "The leading man of a creaky country-house murder mystery forgets his lines. The prompt is in the bar, so his co-star and the corpse must steer him through the whole plot, and he gets every clue magnificently wrong.",
+    synopsis: [
+      "Mallory Manor, 1934. Sir Reginald lies dead in the drawing room, Lady Cynthia wrings her handkerchief, and the great Inspector Hale of Scotland Yard sweeps in to solve the case. Then he dries, and leaps from page twelve straight to page ninety-one.",
+      "With the prompt nowhere to be found, Lady Cynthia feeds him the plot in frantic, meaningful bursts, and Sir Reginald starts helping from beyond the grave. The clues could hardly be plainer. The Inspector could hardly be further from them. A farce for every company that has ever lived through a dry."
+    ],
+    cast: "3 (2M, 1F as written; the Inspector can be any gender, and Lady Cynthia can become Lord Cyril)",
+    castShort: "Cast of 3",
+    runtime: "About 8–10 minutes",
+    runtimeShort: "8–10 min",
+    set: "A table and two chairs",
+    sound: "One sound effect, at the end",
+    props: "A gardening trowel, a magnifying glass, a handkerchief, a torch",
+    genre: "Comedy",
+    pages: 9,
+    price: 3.5,
+    currency: "USD",
+    checkoutUrl: "",   // paste the Payhip / Lemon Squeezy link here
+    preview: [
+      { d: "Lights up. The drawing room of Mallory Manor, 1934. A table and two chairs. In one chair, SIR REGINALD MALLORY, very dead, slumped. A gardening trowel lies on the table beside him. LADY CYNTHIA stands wringing a handkerchief. The INSPECTOR sweeps in, magnifying glass in hand. Everything is played in the grandest old-fashioned manner." },
+      { c: "INSPECTOR", t: "Good evening, Lady Cynthia. Inspector Hale, Scotland Yard. I came the moment I received your telegram." },
+      { c: "LADY CYNTHIA", t: "Oh, Inspector, thank heavens you've come! It's my husband. He's —" },
+      { c: "INSPECTOR", p: "(striding to the body)", t: "Dead. Yes. Very dead. And unless I am very much mistaken…" },
+      { d: "He straightens. A pause. A longer pause." },
+      { c: "INSPECTOR", t: "…unless I am very much mistaken…" },
+      { d: "He glances towards the wings. Nothing." },
+      { c: "INSPECTOR", p: "(louder, at the wings)", t: "Unless. I am. Very much. Mistaken." },
+      { d: "Nothing." },
+      { c: "SIR REGINALD", p: "(out of the side of his mouth, barely moving)", t: "…trowel…" },
+      { c: "INSPECTOR", p: "(triumphant)", t: "The towel!" },
+      { d: "He looks around the room for a towel." },
+      { c: "LADY CYNTHIA", p: "(through a fixed smile)", t: "The trowel, Inspector." },
+      { c: "INSPECTOR", p: "(picking it up)", t: "…A gardening trowel. In the drawing room. Most irregular." },
+      { c: "LADY CYNTHIA", p: "(relieved)", t: "Yes!" },
+      { d: "The INSPECTOR, sensing he's back on track, gains confidence. Too much." },
+      { c: "INSPECTOR", t: "So. The second body has been found!" },
+      { c: "LADY CYNTHIA", p: "(through her teeth)", t: "There isn't a second body yet, Inspector. That's not until Act Two." },
+      { c: "INSPECTOR", t: "Right. Yes. Of course." },
+      { d: "The INSPECTOR panics and leaps to the only speech he knows by heart." },
+      { c: "INSPECTOR", t: "Then I have gathered you all here tonight —" },
+      { d: "LADY CYNTHIA freezes. SIR REGINALD lets out a tiny groan." },
+      { c: "SIR REGINALD", p: "(muttering)", t: "We've jumped to page ninety-one…!" }
+    ]
+  },
+  {
+    slug: "the-interview",
+    title: "The Interview",
+    logline: "In a world where women have always run things, a highly qualified man interviews for a senior job. His interviewer is warm, encouraging and sincerely progressive, and every question she asks is one women have heard for generations.",
+    synopsis: [
+      "Graham has twenty years' experience, three degrees and a very good tie. Ms Pemberton, Head of Operations, is delighted to meet him. She just has a few questions first: about his wife, his plans for a family, his hormones, his short sleeves and whether he could smile a little more.",
+      "A sharp, funny two-hander that turns a generic job interview inside out. Nobody on stage ever points out what's happening, right up to one last formality."
+    ],
+    cast: "2 (1M, 1F)",
+    castShort: "Cast of 2",
+    runtime: "About 7 minutes",
+    runtimeShort: "7 min",
+    set: "A desk and two chairs",
+    sound: "None",
+    props: "A folder, a pen, a single form",
+    genre: "Comedy / satire",
+    pages: 7,
+    price: 3.5,
+    currency: "USD",
+    checkoutUrl: "",   // paste the Payhip / Lemon Squeezy link here
+    preview: [
+      { d: "Lights up. An office. A desk, two chairs. MS PEMBERTON sits behind the desk, leafing through a folder. A knock. GRAHAM enters: good suit, folder under his arm, nervous but composed." },
+      { c: "MS PEMBERTON", p: "(rising, all warmth)", t: "Graham! Come in, come in. Sit down. Well, don't you look smart. Did your wife pick that tie?" },
+      { c: "GRAHAM", t: "I picked it, actually." },
+      { c: "MS PEMBERTON", t: "Good for you. Now, I'll be honest with you, Graham. I very nearly didn't read your CV." },
+      { c: "GRAHAM", t: "Oh?" },
+      { c: "MS PEMBERTON", t: "We don't get many men applying for leadership roles. I thought it might have been sent to the wrong department. But here you are! And very impressive on paper. Twenty years' experience. Two degrees." },
+      { c: "GRAHAM", t: "Three." },
+      { c: "MS PEMBERTON", p: "(delighted)", t: "Three! Your mother must be so proud." },
+      { c: "GRAHAM", t: "She is." },
+      { c: "MS PEMBERTON", t: "Now, just a few questions. Nothing to worry about. Are you married?" },
+      { c: "GRAHAM", p: "(a slight pause)", t: "Is that relevant to the role?" },
+      { c: "MS PEMBERTON", t: "Oh, we ask everyone. Well. Every man." },
+      { c: "GRAHAM", t: "…Yes. I'm married." },
+      { c: "MS PEMBERTON", t: "Lovely. And are you planning on starting a family?" },
+      { c: "GRAHAM", t: "We haven't — that's a private matter, really." },
+      { c: "MS PEMBERTON", t: "Of course, of course. It's only that we invest a great deal in our people, Graham, and men do tend to say they'll come back after paternity leave, and then…" },
+      { d: "She makes a little fluttering gesture: off they fly." },
+      { c: "GRAHAM", t: "I'd come back." },
+      { c: "MS PEMBERTON", t: "That's what they all say. And who would do school pick-up? If there were a late meeting?" },
+      { c: "GRAHAM", t: "My wife. Or me. We'd share it." },
+      { c: "MS PEMBERTON", p: "(touched)", t: "Isn't that modern." }
+    ]
+  },
+  {
+    slug: "cave-talk",
+    title: "Cave Talk",
+    logline: "Forty thousand years ago, two Neanderthal friends catch up the way friends always have: bad dates, housing prices, trouble at work and the kids drawing on the walls.",
+    synopsis: [
+      "The ice is halfway down the valley again, the kids have covered the cave in bison, and a cave with river views is going for six mammoths. Gruna has just been made Head of Fire, though there are rumours some new invention is about to take everyone's jobs. Orla's dating life is, as ever, a disaster.",
+      "A warm, quick two-hander for two women, played completely straight, like two friends over coffee. It just happens to be the Ice Age. And Orla has news about the new man in her life that her mother is not going to like."
+    ],
+    cast: "2 (2F)",
+    castShort: "Cast of 2",
+    runtime: "About 7 minutes",
+    runtimeShort: "7 min",
+    set: "Two chairs (standing in for rocks)",
+    sound: "None",
+    props: "A basket of berries, a scrubbing rag",
+    genre: "Comedy",
+    pages: 7,
+    price: 3.5,
+    currency: "USD",
+    checkoutUrl: "",   // paste the Payhip / Lemon Squeezy link here
+    preview: [
+      { d: "Lights up. A cave, about 40,000 years ago. Two chairs stand in for rocks. GRUNA, in furs, hair wild, is on her knees downstage, scrubbing furiously at the cave wall. The wall is the audience." },
+      { c: "GRUNA", p: "(scrubbing)", t: "Bison. Bison, bison, bison. Everywhere. I turn my back for one minute…" },
+      { d: "ORLA enters, in furs, stamping her feet and rubbing her arms, a basket of berries over one arm." },
+      { c: "ORLA", t: "Morning! Ooh, it's freezing out there. The ice is halfway down the valley again." },
+      { c: "GRUNA", t: "This Ice Age. When's it ever going to end?" },
+      { c: "ORLA", t: "Another twenty thousand years, they reckon." },
+      { c: "GRUNA", t: "They always say that." },
+      { d: "Air kisses." },
+      { c: "ORLA", t: "You look amazing. Have you done something with your brow?" },
+      { c: "GRUNA", p: "(patting her heavy brow, pleased)", t: "Just a trim." },
+      { c: "ORLA", p: "(seeing the wall)", t: "Oh no. The kids again?" },
+      { c: "GRUNA", t: "Look at it. Horses. Bison. Some sort of deer. And handprints, right up to the ceiling. How did they even get up there?" },
+      { c: "ORLA", t: "They're quite good, actually. That bison's got real movement." },
+      { c: "GRUNA", t: "Don't encourage them. It's ochre. It never comes out." },
+      { d: "She gives up and they sit. ORLA offers the berries." },
+      { c: "GRUNA", t: "So. Go on. How was your date?" },
+      { c: "ORLA", p: "(rolling her eyes)", t: "Him? Oh, he was a real caveman." },
+      { c: "GRUNA", t: "That's terrific, babe! What sort of cave did he have?" },
+      { c: "ORLA", t: "His mother's." },
+      { c: "GRUNA", t: "No." },
+      { c: "ORLA", t: "Still living with her. Thirty-one years old." },
+      { c: "GRUNA", t: "Thirty-one! He's practically ancient." }
+    ]
+  }
+];
+
+/* ===========================================================
+   Page logic (no need to edit below here)
+   =========================================================== */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const money = p => `US$${p.price.toFixed(2)}`;
+
+function buyButton(p, label) {
+  if (p.checkoutUrl) {
+    return `<a class="btn primary" href="${esc(p.checkoutUrl)}" rel="noopener">${label}</a>`;
+  }
+  return `<button class="btn primary" type="button" data-buy="${esc(p.slug)}">${label}</button>`;
+}
+
+function renderCatalogue() {
+  $("#catalogue").innerHTML = PLAYS.map(p => `
+    <article class="play-card">
+      <h3><a href="#play-${p.slug}">${esc(p.title)}</a></h3>
+      <p class="logline">${esc(p.logline)}</p>
+      <ul class="facts" aria-label="At a glance">
+        <li>${esc(p.castShort)}</li><li>${esc(p.runtimeShort)}</li><li>${esc(p.genre)}</li>
+      </ul>
+      <div class="actions">
+        <a class="btn" href="#play-${p.slug}">Read the opening</a>
+        ${buyButton(p, `License for ${money(p)}`)}
+      </div>
+    </article>`).join("") + `
+    <div class="coming">More plays are on the way. New titles are added as they're written.</div>`;
+  $("#play-count").textContent = `${PLAYS.length} ${PLAYS.length === 1 ? "play" : "plays"}`;
+}
+
+function renderPlay(p) {
+  const script = p.preview.map(x => x.d
+    ? `<p class="dir">${esc(x.d)}</p>`
+    : `<div class="speech"><p class="who">${esc(x.c)}</p>${x.p ? `<p class="paren">${esc(x.p)}</p>` : ""}<p class="line">${esc(x.t)}</p></div>`
+  ).join("");
+
+  $("#view-play").innerHTML = `
+    <a class="back" href="#plays">← All plays</a>
+    <div class="play-head">
+      <div>
+        <h1>${esc(p.title)}</h1>
+        <p class="byline">A short play by Sam Harley</p>
+        <div class="synopsis">${p.synopsis.map(s => `<p>${esc(s)}</p>`).join("")}</div>
+        <table class="specs">
+          <tr><th scope="row">Cast</th><td>${esc(p.cast)}</td></tr>
+          <tr><th scope="row">Running time</th><td>${esc(p.runtime)}</td></tr>
+          <tr><th scope="row">Set</th><td>${esc(p.set)}</td></tr>
+          <tr><th scope="row">Sound</th><td>${esc(p.sound)}</td></tr>
+          <tr><th scope="row">Props</th><td>${esc(p.props)}</td></tr>
+          <tr><th scope="row">Script</th><td>${p.pages} pages</td></tr>
+        </table>
+      </div>
+      <aside class="buybox" aria-label="License this play">
+        <div class="price">${money(p)}</div>
+        <ul>
+          <li>Full script as a PDF</li>
+          <li>Rights for one group to perform it for 12 months</li>
+          <li>Print as many copies as your cast needs</li>
+        </ul>
+        ${buyButton(p, "License this play")}
+        <p class="notice" data-notice="${esc(p.slug)}" hidden>Checkout isn't connected yet. Email hello@samharleyplays.com to license this play.</p>
+        <p class="note">See the <a href="#licensing">licence terms</a>.</p>
+      </aside>
+    </div>
+
+    <div class="preview-label">
+      <h2>Read the opening</h2>
+      <span>The first pages of ${p.pages}</span>
+    </div>
+    <div class="script">
+      <div class="title-block"><b>${esc(p.title)}</b>by Sam Harley</div>
+      ${script}
+      <div class="spacer"></div>
+      <div class="fade"></div>
+    </div>
+    <div class="end-preview">
+      <p><strong>The preview ends here.</strong> License the play to read the rest, including the ending.</p>
+      ${buyButton(p, `License for ${money(p)}`)}
+    </div>`;
+}
+
+function show(view) {
+  document.querySelectorAll(".view").forEach(v => v.hidden = v.id !== "view-" + view);
+  document.querySelectorAll("nav a").forEach(a => {
+    const on = a.dataset.nav === view || (view === "play" && a.dataset.nav === "plays");
+    on ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current");
+  });
+}
+
+function route() {
+  const h = location.hash.replace("#", "");
+  if (h.startsWith("play-")) {
+    const p = PLAYS.find(x => x.slug === h.slice(5));
+    if (p) { renderPlay(p); show("play"); window.scrollTo(0, 0); document.title = `${p.title} · Sam Harley Plays`; return; }
+  }
+  const view = ["licensing", "about"].includes(h) ? h : "plays";
+  show(view);
+  document.title = view === "plays" ? "Sam Harley Plays" : `${view[0].toUpperCase() + view.slice(1)} · Sam Harley Plays`;
+  if (h) window.scrollTo(0, 0);
+}
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-buy]");
+  if (!b) return;
+  const slug = b.dataset.buy;
+  if (!location.hash.startsWith("#play-")) { location.hash = "play-" + slug; return; }
+  const n = document.querySelector(`[data-notice="${slug}"]`);
+  if (n) { n.hidden = false; n.scrollIntoView({ block: "nearest" }); }
+});
+
+$("#year").textContent = new Date().getFullYear();
+renderCatalogue();
+route();
+window.addEventListener("hashchange", route);
+</script>
+</body>
+</html>
